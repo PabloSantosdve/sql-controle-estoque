@@ -11,7 +11,7 @@ CREATE TABLE "localizacao" (
 );
 
 CREATE TABLE "fornecedor" (
-  "id_fornecedor" int PRIMARY KEY,
+  "id_fornecedor" integer PRIMARY KEY,
   "razao_social" varchar(150),
   "cnpj" varchar(14),
   "email" varchar(100),
@@ -25,27 +25,27 @@ CREATE TABLE "produto" (
   "nome" varchar(80),
   "descricao" varchar(200),
   "categoria" varchar(100),
-  "unidade_medida" integer,
+  "unidade_medida" varchar(10),
   "estoque_minimo" integer,
   "estoque_maximo" integer,
   "preco_venda" decimal(10,2)
 );
 
 CREATE TABLE "lote" (
-  "id_lote" int PRIMARY KEY,
+  "id_lote" integer PRIMARY KEY,
   "sku" varchar(50),
-  "id_fornecedor" int,
+  "id_fornecedor" integer,
   "id_localizacao" integer,
   "validade" date,
   "preco_custo" decimal(10,2)
 );
 
 CREATE TABLE "movimentacao_estoque" (
-  "id_movimentacao" int PRIMARY KEY,
-  "id_lote" int,
+  "id_movimentacao" integer PRIMARY KEY,
+  "id_lote" integer,
   "id_usuario" integer,
   "tipo" varchar(30),
-  "quantidade" int,
+  "quantidade" integer,
   "data_hora" timestamp,
   "documento_origem" varchar(80)
 );
