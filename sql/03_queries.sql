@@ -44,17 +44,18 @@ JOIN produto p ON l.sku = p.sku
 WHERE l.validade BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
 ORDER BY l.validade ASC;
 
--- Quais produtos estão com o saldo total abaixo do estoque mínimo? Mostre o nome, o saldo total e o estoque mínimo.
+-- Quais produtos estão com o saldo total abaixo do estoque mínimo, inclusive os que nunca tiveram movimentação? Mostre o nome, o saldo total e o estoque mínimo.
 WITH saldo_por_produto AS (
-    SELECT p.nome, 
-        SUM(CASE WHEN me.tipo IN ('entrada_compra', 'entrada_devolucao') THEN me.quantidade 
-        ELSE -me.quantidade 
-        END) AS saldo_total,
-        p.estoque_minimo
+    SELECT p.nome,
+           COALESCE(SUM(CASE WHEN me.tipo IN ('entrada_compra', 'entrada_devolucao') THEN me.quantidade
+                             ELSE -me.quantidade
+                        END), 0) AS saldo_total,
+           p.estoque_minimo
     FROM produto p
-JOIN lote l ON p.sku = l.sku
-JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
-GROUP BY p.sku, p.nome, p.estoque_minimo
+    LEFT JOIN lote l ON p.sku = l.sku
+    LEFT JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
+    GROUP BY p.sku, p.nome, p.estoque_minimo
 )
-SELECT nome, saldo_total, estoque_minimo FROM saldo_por_produto
+SELECT nome, saldo_total, estoque_minimo
+FROM saldo_por_produto
 WHERE saldo_total < estoque_minimo;
