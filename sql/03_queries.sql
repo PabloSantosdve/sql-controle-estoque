@@ -28,3 +28,11 @@ FROM movimentacao_estoque
 WHERE tipo = 'saida_venda'
 GROUP BY id_lote
 ORDER BY unidades_vendidas DESC;
+
+-- Qual o saldo atual de cada lote, ou seja, o total de entradas menos o total de saídas?
+SELECT id_lote, 
+    SUM(CASE WHEN tipo = 'entrada_compra' OR tipo = 'entrada_devolucao' THEN quantidade 
+    ELSE -quantidade 
+    END) AS saldo
+FROM movimentacao_estoque
+GROUP BY id_lote;
