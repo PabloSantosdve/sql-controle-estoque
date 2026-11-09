@@ -36,3 +36,25 @@ SELECT id_lote,
     END) AS saldo
 FROM movimentacao_estoque
 GROUP BY id_lote;
+
+-- Quais lotes vencem nos próximos 30 dias, mostrando o id do lote, o nome do produto e a validade, do que vence primeiro para o que vence por último
+SELECT l.id_lote, p.nome, l.validade
+FROM lote l
+JOIN produto p ON l.sku = p.sku
+WHERE l.validade BETWEEN CURRENT_DATE AND CURRENT_DATE + INTERVAL '30 days'
+ORDER BY l.validade ASC;
+
+-- Quais produtos estão com o saldo total abaixo do estoque mínimo? Mostre o nome, o saldo total e o estoque mínimo.
+WITH saldo_por_produto AS (
+    SELECT p.nome, 
+        SUM(CASE WHEN me.tipo IN ('entrada_compra', 'entrada_devolucao') THEN me.quantidade 
+        ELSE -me.quantidade 
+        END) AS saldo_total,
+        p.estoque_minimo
+    FROM produto p
+JOIN lote l ON p.sku = l.sku
+JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
+GROUP BY p.sku, p.nome, p.estoque_minimo
+)
+SELECT nome, saldo_total, estoque_minimo FROM saldo_por_produto
+WHERE saldo_total < estoque_minimo;
