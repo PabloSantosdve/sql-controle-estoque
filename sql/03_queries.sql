@@ -59,3 +59,11 @@ WITH saldo_por_produto AS (
 SELECT nome, saldo_total, estoque_minimo
 FROM saldo_por_produto
 WHERE saldo_total < estoque_minimo;
+
+-- Quantas movimentações cada usuário registrou, do que mais registrou para o que menos? Mostre o nome do usuário e a quantidade.
+SELECT u.nome, COUNT(me.id_movimentacao) AS quantidade_movimentacoes
+FROM usuario u
+LEFT JOIN movimentacao_estoque me ON u.id_usuario = me.id_usuario
+GROUP BY u.id_usuario, u.nome
+ORDER BY quantidade_movimentacoes DESC, u.nome;
+
