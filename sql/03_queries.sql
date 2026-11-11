@@ -67,3 +67,18 @@ LEFT JOIN movimentacao_estoque me ON u.id_usuario = me.id_usuario
 GROUP BY u.id_usuario, u.nome
 ORDER BY quantidade_movimentacoes DESC, u.nome;
 
+-- Quais lotes já venceram e ainda têm saldo maior que zero? Mostre o id do lote, o nome do produto, a validade e o saldo, do vencido há mais tempo para o mais recente.
+WITH saldo_por_lote AS (
+    SELECT l.id_lote, p.nome, l.validade,
+           COALESCE(SUM(CASE WHEN me.tipo IN ('entrada_compra', 'entrada_devolucao') THEN me.quantidade
+                             ELSE -me.quantidade
+                        END), 0) AS saldo
+    FROM lote l
+    JOIN produto p ON l.sku = p.sku
+    LEFT JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
+    GROUP BY l.id_lote, p.nome, l.validade
+)
+SELECT id_lote, nome, validade, saldo
+FROM saldo_por_lote
+WHERE validade < CURRENT_DATE AND saldo > 0
+ORDER BY validade ASC;
