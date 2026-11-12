@@ -92,3 +92,23 @@ SELECT id_lote, nome, validade, saldo
 FROM saldo_por_lote
 WHERE validade < CURRENT_DATE AND saldo > 0
 ORDER BY validade ASC;
+
+-- Qual o valor do estoque de cada produto (saldo de cada lote × preço de custo do lote)? Mostre o nome do produto e o valor total, do maior para o menor.
+WITH valor_estoque_por_produto AS (
+    SELECT p.nome,
+           SUM(l.saldo * l.preco_custo) AS valor_total_estoque
+    FROM produto p
+    JOIN (
+        SELECT l.id_lote, l.sku, l.preco_custo,
+               COALESCE(SUM(CASE WHEN me.tipo IN ('entrada_compra', 'entrada_devolucao') THEN me.quantidade
+                                 ELSE -me.quantidade
+                            END), 0) AS saldo
+        FROM lote l
+        LEFT JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
+        GROUP BY l.id_lote, l.sku, l.preco_custo
+    ) l ON p.sku = l.sku
+    GROUP BY p.sku, p.nome
+)
+SELECT nome, valor_total_estoque
+FROM valor_estoque_por_produto
+ORDER BY valor_total_estoque DESC;
