@@ -112,3 +112,17 @@ WITH valor_estoque_por_produto AS (
 SELECT nome, valor_total_estoque
 FROM valor_estoque_por_produto
 ORDER BY valor_total_estoque DESC;
+
+--Qual o faturamento de cada produto (unidades vendidas × preço de venda)? Mostre o nome do produto e o faturamento total, do maior para o menor.
+WITH faturamento_por_produto AS (
+    SELECT p.nome,
+           SUM(me.quantidade * p.preco_venda) AS faturamento_total
+    FROM produto p
+    JOIN lote l ON p.sku = l.sku
+    JOIN movimentacao_estoque me ON l.id_lote = me.id_lote
+    WHERE me.tipo = 'saida_venda'
+    GROUP BY p.sku, p.nome
+)
+SELECT nome, faturamento_total
+FROM faturamento_por_produto
+ORDER BY faturamento_total DESC;
