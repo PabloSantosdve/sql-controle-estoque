@@ -167,7 +167,7 @@ FROM valor_estoque_por_produto
 ORDER BY valor_total_estoque DESC;
 
 -- 12) Qual o faturamento de cada produto (unidades vendidas × preço de venda)?
---     Mostre o nome do produto e o faturamento total, do maior para o menor.
+-- Mostre o nome do produto e o faturamento total, do maior para o menor.
 -- Conceito: aqui só importam as saídas por venda, então o WHERE já resolve o filtro, sem CASE.
 -- Como há uma etapa só, não precisa de WITH. Ele vale a pena quando separa duas etapas.
 -- Limitação: usa o preço de venda ATUAL do produto para todas as vendas, mesmo as antigas.
