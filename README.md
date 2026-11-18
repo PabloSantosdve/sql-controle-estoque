@@ -45,6 +45,8 @@ O modelo tem 6 tabelas:
 ├── README.md
 ├── docs/
 │   ├── modelo_er.png      -> diagrama do modelo
+├── powerbi/
+│   ├── paine_estoque  -> Painel do Banco no BI(Desktop)
 └── sql/
     ├── 01_schema.sql      -> criação das tabelas
     ├── 02_seed.sql        -> dados de exemplo
