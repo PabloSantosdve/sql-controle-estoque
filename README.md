@@ -104,6 +104,15 @@ O arquivo `sql/03_queries.sql` traz, para cada consulta, a pergunta de negócio 
 
 As consultas 7 e 10 dependem da data de hoje, então o resultado muda com o tempo.
 
+## Painel (Power BI)
+
+O painel em `powerbi/painel_estoque.pbix` lê as views do banco (`vw_movimentacao_detalhada` e `vw_saldo_por_lote`) em modo Importar. Para abrir:
+
+1. Crie o banco e rode os scripts (`01_schema.sql`, `02_seed.sql`, `02_seed_volume.sql` e `05_views.sql`).
+2. Abra o arquivo no Power BI Desktop e, em **Transformar dados > Configurações da fonte de dados**, confira o servidor (`localhost`) e o banco (`controle_estoque`), com as suas credenciais.
+
+Estado atual: primeiro gráfico (movimentações por mês, por tipo). Em desenvolvimento: saldo por produto, indicadores e lotes perto de vencer.
+
 ## Limitações e próximos passos
 
 - A quantidade reservada (itens vendidos que ainda não saíram do galpão) ficou fora desta versão, porque depende de uma tabela de pedidos.
