@@ -29,3 +29,11 @@ JOIN lote l ON me.id_lote = l.id_lote
 JOIN produto p ON l.sku = p.sku
 JOIN fornecedor f ON l.id_fornecedor = f.id_fornecedor
 JOIN usuario u ON me.id_usuario = u.id_usuario;
+
+-- Valor do estoque de cada produto (saldo de cada lote × custo do lote, somado por produto)
+CREATE OR REPLACE VIEW vw_valor_estoque_por_produto AS
+SELECT sku,
+       nome AS produto,
+       SUM(saldo * preco_custo) AS valor_estoque
+FROM vw_saldo_por_lote
+GROUP BY sku, nome;
